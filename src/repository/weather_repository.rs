@@ -1,6 +1,5 @@
 use reqwest::StatusCode;
 use serde_json::Value;
-use thiserror::Error;
 
 pub struct WeatherRepository;
 
