@@ -1,61 +1,49 @@
-mod repository;
 mod usecase;
+mod repository;
 
-use repository::weather_repository::WeatherRepository;
-use repository::scraper_repository::ScraperRepository;
-use usecase::weather_usecase::WeatherUsecase;
+use lambda_runtime::{service_fn, Error, LambdaEvent};
+use serde_json::Value;
+use usecase::line_usecase::{LineSendInput, LineUsecase};
 use usecase::train_info_usecase::TrainInfoUsecase;
+use usecase::weather_usecase::WeatherUsecase;
+use repository::line_repository::{LineRepository};
+use repository::scraper_repository::{ScraperRepository};
+use repository::weather_repository::{WeatherRepository};
 
-#[tokio::main]
-async fn main() {
+async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(), Error> {
     let weather_repository = WeatherRepository::new();
     let weather_usecase = WeatherUsecase::new(weather_repository);
-    
-    match weather_usecase.handle().await {
-        Ok(response) => {
-            println!("取得したデータ: {}", response.forecast);
-        }
-        Err(err) => {
-            eprintln!("エラーが発生しました: {}", err)
-        }
-    }
 
     let scraper_repository = ScraperRepository::new();
     let train_info_usecase = TrainInfoUsecase::new(scraper_repository);
 
-    match train_info_usecase.handle().await {
-        Ok(response) => {
-            println!("取得したデータ: {:?}", response.abnormal_train);
-        }
-        Err(err) => {
-            eprintln!("エラーが発生しました: {}", err)
-        }
-    }
+    let line_repository = LineRepository::new()?;
+    let line_usecase = LineUsecase::new(line_repository)?;
+
+    // let line_repository = LineRepository::new()?;
+    // let scraper_repository = ScraperRepository::new()?;
+    // let weather_repository = WeatherRepository::new()?;
+
+    // let weather_usecase = WeatherUsecase::new(weather_repository);
+    // let train_info_usecase = TrainInfoUsecase::new(scraper_repository);
+    // let line_usecase = LineUsecase::new(line_repository);
+
+    let weather_output = weather_usecase.handle().await?;
+    let abnormal_train_output = train_info_usecase.handle().await?;
+    line_usecase
+        .handle(LineSendInput {
+            qiita_items: vec!["Qiita記事1".to_string()],
+            zenn_items: vec!["Zenn記事1".to_string()],
+            abnormal_train: abnormal_train_output.abnormal_train,
+            weather_forecast: weather_output.forecast,
+        })
+        .await?;
+
+    Ok(())
 }
 
-
-// use lambda_runtime::{handler_fn, Context, Error};
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Deserialize)]
-// struct Request {
-//     pub name: String,
-// }
-
-// #[derive(Serialize)]
-// struct Response {
-//     pub message: String,
-// }
-
-// #[tokio::main]
-// async fn main() -> Result<(), Error> {
-//     let func = handler_fn(my_handler);
-//     lambda_runtime::run(func).await?;
-//     Ok(())
-// }
-
-// async fn my_handler(event: Request, _: Context) -> Result<Response, Error> {
-//     let name = event.name;
-//     let message = format!("Hello, {}!", name);
-//     Ok(Response { message })
-// }
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    // let func = service_fn(lambda_handler);
+    Ok(())
+}

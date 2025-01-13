@@ -1978,6 +1978,7 @@ version = "0.1.0"
 dependencies = [
  "aws_lambda_events",
  "blocking",
+ "chrono",
  "lambda_runtime",
  "reqwest",
  "scraper",
