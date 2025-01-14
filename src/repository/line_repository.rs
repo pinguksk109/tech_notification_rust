@@ -17,7 +17,7 @@ impl LineRepository {
         Ok(Self { to, bearer_token })
     }
 
-    pub async fn send_message(&self, message: &str) -> Result<(), Box<dyn Error>> {
+    pub async fn send_message(&self, message: &str) -> Result<(), Box<dyn Error + Send + Sync>> {
         let url = "https://api.line.me/v2/bot/message/push";
 
         let payload = json!({

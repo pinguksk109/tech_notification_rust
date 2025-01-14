@@ -36,7 +36,7 @@ impl LineUsecase {
         })
     }
 
-    pub async fn handle(&self, input_data: LineSendInput) -> Result<(), Box<dyn Error>> {
+    pub async fn handle(&self, input_data: LineSendInput) -> Result<(), Box<dyn Error + Send + Sync>> {
         let weather_message = self.create_weather_forecast_message(&input_data.weather_forecast);
         self.line_repository.send_message(&weather_message).await?;
 

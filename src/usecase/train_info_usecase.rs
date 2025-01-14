@@ -16,7 +16,7 @@ impl TrainInfoUsecase {
         TrainInfoUsecase { scraper_repository }
     }
 
-    pub async fn handle(&self) -> Result<TrainInfoOutput, Box<dyn Error>> {
+    pub async fn handle(&self) -> Result<TrainInfoOutput, Box<dyn std::error::Error + Send + Sync>> {
         let target_url = "https://subway.osakametro.co.jp/guide/subway_information.php";
         let html_content = self.scraper_repository.fetch_content(target_url).await?;
         let abnormal_train_list = self

@@ -9,14 +9,14 @@ impl ScraperRepository {
         ScraperRepository
     }
 
-    pub async fn fetch_content(&self, url: &str) -> Result<String, Box<dyn Error>> {
+    pub async fn fetch_content(&self, url: &str) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
         let client = Client::new();
         let response = client.get(url).send().await?.error_for_status()?;
         let content = response.text().await?;
         Ok(content)
     }
 
-    pub fn parse_all_lines_status(&self, html_content: &str) -> Result<Vec<String>, Box<dyn Error>> {
+    pub fn parse_all_lines_status(&self, html_content: &str) -> Result<Vec<String>, Box<dyn std::error::Error + Send + Sync>> {
         let document = Html::parse_document(html_content);
         let subway_selector = Selector::parse("dd.headerMenuOperationArea_subway").unwrap();
         let line_name_selector = Selector::parse("li.subwayArea_LineName img").unwrap();
