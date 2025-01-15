@@ -1,3 +1,4 @@
+use dotenv::dotenv;
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE, AUTHORIZATION};
 use serde_json::json;
 use std::env;
@@ -10,6 +11,8 @@ pub struct LineRepository {
 
 impl LineRepository {
     pub fn new() -> Result<Self, Box<dyn Error + Send + Sync>> {
+        dotenv().ok();
+
         let to = env::var("LINE_USER_ID")
         .map_err(|_| "環境変数 LINE_USER_ID が設定されていません")?;
         let bearer_token = env::var("LINE_BEARER_TOKEN")
@@ -34,10 +37,11 @@ impl LineRepository {
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
         headers.insert(
             AUTHORIZATION,
-            HeaderValue::from_str(&format!("Beader {}", self.bearer_token))?,
+            HeaderValue::from_str(&format!("{}", self.bearer_token))?,
         );
 
         let client = reqwest::Client::new();
+        println!("{:?}", headers);
         let response = client.post(url).headers(headers).json(&payload).send().await?;
     
         if !response.status().is_success() {
