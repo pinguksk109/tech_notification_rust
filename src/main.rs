@@ -11,6 +11,7 @@ use usecase::weather_usecase::WeatherUsecase;
 use repository::line_repository::{LineRepository};
 use repository::scraper_repository::{ScraperRepository};
 use repository::weather_repository::{WeatherRepository};
+use repository::qiita_api_repository::{QiitaApiRepository};
 
 async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(String), Error> {
     let weather_repository = WeatherRepository::new();
