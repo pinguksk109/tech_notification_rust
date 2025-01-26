@@ -14,7 +14,7 @@ impl QiitaApiRepository {
         }
     }
 
-    pub fn get_items(&self, page: u32) -> Result<Value, Box<dyn std::error::Error>> {
+    pub async fn get_items(&self, page: u32) -> Result<Value, Box<dyn std::error::Error>> {
         let url = format!(
             "https://qiita.com/api/v2/items? page={}&per_page=100",
             page

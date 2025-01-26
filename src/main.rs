@@ -8,6 +8,7 @@ use serde_json::Value;
 use usecase::line_usecase::{LineSendInput, LineUsecase, Item};
 use usecase::train_info_usecase::TrainInfoUsecase;
 use usecase::weather_usecase::WeatherUsecase;
+use usecase::tech_recommend_usecase::{TechRecommendUsecase, ZennRecommendOutput, QiitaRecommendOutput};
 use repository::line_repository::{LineRepository};
 use repository::scraper_repository::{ScraperRepository};
 use repository::weather_repository::{WeatherRepository};
@@ -23,13 +24,8 @@ async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(String), Error> {
     let line_repository = LineRepository::new()?;
     let line_usecase = LineUsecase::new(line_repository)?;
 
-    // let line_repository = LineRepository::new()?;
-    // let scraper_repository = ScraperRepository::new()?;
-    // let weather_repository = WeatherRepository::new()?;
+    // let tech_recommend_usecase = TechRecommendUsecase::new(qiita_api_repository, zenn_api_repository);
 
-    // let weather_usecase = WeatherUsecase::new(weather_repository);
-    // let train_info_usecase = TrainInfoUsecase::new(scraper_repository);
-    // let line_usecase = LineUsecase::new(line_repository);
 
     let weather_output = weather_usecase.handle().await?;
     let abnormal_train_output = train_info_usecase.handle().await?;
@@ -37,7 +33,7 @@ async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(String), Error> {
     .handle(LineSendInput {
         qiita_items: vec![
             Item {
-                titiel: "Qiita記事1".to_string(),  // "title"の綴りを確認してください
+                titiel: "Qiita記事1".to_string(), 
                 url: "http://example.com/qiita_article".to_string(),
             },
         ],
