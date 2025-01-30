@@ -1,5 +1,6 @@
 mod usecase;
 mod repository;
+mod domain;
 
 use std::vec;
 
@@ -12,7 +13,7 @@ use usecase::tech_recommend_usecase::{TechRecommendUsecase, ZennRecommendOutput,
 use repository::line_repository::{LineRepository};
 use repository::scraper_repository::{ScraperRepository};
 use repository::weather_repository::{WeatherRepository};
-use repository::qiita_api_repository::{QiitaApiRepository};
+use repository::qiita_api_repository::{self, QiitaApiRepository};
 
 async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(String), Error> {
     let weather_repository = WeatherRepository::new();
@@ -24,7 +25,9 @@ async fn lambda_handler(_event: LambdaEvent<Value>) -> Result<(String), Error> {
     let line_repository = LineRepository::new()?;
     let line_usecase = LineUsecase::new(line_repository)?;
 
-    // let tech_recommend_usecase = TechRecommendUsecase::new(qiita_api_repository, zenn_api_repository);
+    let qiita_api_repository = QiitaApiRepository::new();
+    let zenn_api_repository = ZennApiRepository::new();
+    let tech_recommend_usecase = TechRecommendUsecase::new(qiita_api_repository, zenn_api_repository);
 
 
     let weather_output = weather_usecase.handle().await?;
