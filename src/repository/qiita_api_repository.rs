@@ -1,4 +1,4 @@
-use reqwest::blocking::Client;
+use reqwest::Client;
 use reqwest::StatusCode;
 use serde_json::Value;
 use std::error::Error;
@@ -23,22 +23,22 @@ impl QiitaApiRepository {
         //テスト用URL
         // let url = "http://localhost:3000/items";
 
-        let response = self.client.get(&url).send()?;
+        let response = self.client.get(&url).send().await?;
 
         match response.status() {
             StatusCode::OK => {
-                let json: Value = response.json()?;
+                let json: Value = response.json().await?;
                 Ok(json)
             }
             StatusCode::FORBIDDEN => Err(format!(
                 "Qiita APIから403(レートリミット)が返却されました。レスポンス内容: {}",
-                response.text()?
+                response.text().await?
             )
             .into()),
             _ => Err(format!(
                 "Qiita APIから200以外が返却されました。ステータスコード: {} レスポンス内容: {}",
                 response.status(),
-                response.text()?
+                response.text().await?
             )
             .into()),
         }
