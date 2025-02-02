@@ -1,9 +1,8 @@
-use log::{info, LevelFilter};
+use log::info;
 use serde::{Serialize, Deserialize};
 use serde_json::Value;
-use std::collections::HashMap;
-use crate::repository::qiita_api_repository::{QiitaApiRepository};
-use crate::repository::zenn_api_repository::{ZennApiRepository};
+use crate::repository::qiita_api_repository::QiitaApiRepository;
+use crate::repository::zenn_api_repository::ZennApiRepository;
 use crate::domain::item::Item;
 
 #[derive(Serialize, Deserialize)]
@@ -63,7 +62,6 @@ impl <'a> TechRecommendUsecase<'a> {
                 }
             }
         }
-
         let ranking_5items = Item::get_5ranking_items(&items);
         QiitaRecommendOutput { items: ranking_5items }
     }
