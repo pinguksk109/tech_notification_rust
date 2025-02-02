@@ -2,19 +2,17 @@ mod usecase;
 mod repository;
 mod domain;
 
-use std::vec;
-
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde_json::Value;
-use usecase::line_usecase::{LineSendInput, LineUsecase, Item};
+use usecase::line_usecase::{LineSendInput, LineUsecase};
 use usecase::train_info_usecase::TrainInfoUsecase;
 use usecase::weather_usecase::WeatherUsecase;
-use usecase::tech_recommend_usecase::{TechRecommendUsecase, ZennRecommendOutput, QiitaRecommendOutput};
-use repository::line_repository::{LineRepository};
-use repository::scraper_repository::{ScraperRepository};
-use repository::weather_repository::{WeatherRepository};
-use repository::qiita_api_repository::{QiitaApiRepository};
-use repository::zenn_api_repository::{ZennApiRepository};
+use usecase::tech_recommend_usecase::TechRecommendUsecase;
+use repository::line_repository::LineRepository;
+use repository::scraper_repository::ScraperRepository;
+use repository::weather_repository::WeatherRepository;
+use repository::qiita_api_repository::QiitaApiRepository;
+use repository::zenn_api_repository::ZennApiRepository;
 
 fn convert_item(item: crate::domain::item::Item) -> crate::usecase::line_usecase::Item {
     crate::usecase::line_usecase::Item {

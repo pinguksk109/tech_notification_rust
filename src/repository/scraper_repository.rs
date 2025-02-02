@@ -1,6 +1,5 @@
 use reqwest::Client;
 use scraper::{Html, Selector};
-use std::error::Error;
 
 pub struct ScraperRepository;
 

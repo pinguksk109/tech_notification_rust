@@ -1,5 +1,4 @@
 use serde::Serialize;
-use std::error::Error;
 use crate::repository::scraper_repository::ScraperRepository;
 
 #[derive(Serialize)]

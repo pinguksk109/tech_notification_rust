@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use chrono::{Local, TimeZone};
+use chrono::Local;
 use std::error::Error;
 
 use crate::repository::{line_repository::{self, LineRepository}, weather_repository};
